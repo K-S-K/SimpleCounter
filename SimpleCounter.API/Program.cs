@@ -1,6 +1,7 @@
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using SimpleCounter.Core;
+using SimpleCounter.Data;
+using SimpleCounter.Draw;
 
 namespace SimpleCounter.API
 {
@@ -8,11 +9,20 @@ namespace SimpleCounter.API
     {
         private static ICounterCore? counterCore;
 
+        /// <summary>
+        /// Program entry point
+        /// 
+        /// Documentation:
+        /// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-7.0
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddSingleton(typeof(ICounterCore), new CounterCore());
+            builder.Services.AddSingleton<ICounterDraw, CounterDraw>();
+            builder.Services.AddSingleton<ICounterData, CounterData>();
+            builder.Services.AddSingleton<ICounterCore, CounterCore>();
 
             var app = builder.Build();
 
