@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using SimpleCounter.Core;
 
 namespace SimpleCounter.API
@@ -21,13 +22,30 @@ namespace SimpleCounter.API
 
             app.MapGet("/", () => "SimpleCounter V.0.0.1");
 
-            app.MapGet("/counter/{id}", (string id) =>
+            app.MapGet("/counter/{id}", (HttpContext http, string id) =>
             {
                 string mimeType = "image/svg+xml";
                 string content = CreateCounterImage(id);
 
-                MemoryStream steram = new(Encoding.UTF8.GetBytes(content));
-                return Results.File(steram, mimeType, $"{id}.svg");
+                http.Response.Headers.CacheControl = "no-cache";
+
+                StringBuilder sb = new();
+                sb.AppendLine($"{DateTime.UtcNow:yyyy.dd.MM HH:mm:ss} Referers[{http.Request.Headers.Referer.Count}]");
+                if (http.Request.Headers.Referer.Count > 0)
+                {
+                    sb.AppendLine("{");
+                    foreach (var referer in http.Request.Headers.Referer)
+                    {
+                        sb.AppendLine($" {referer}");
+                    }
+                    sb.AppendLine("}");
+                    sb.AppendLine();
+                }
+
+                Console.WriteLine(sb.ToString());
+
+                MemoryStream stream = new(Encoding.UTF8.GetBytes(content));
+                return Results.File(stream, mimeType, $"{id}.svg");
                 // return Results.Text(content, mimeType);
             });
 
