@@ -2,7 +2,7 @@
 
 This project is an experiment about creating a "Minimal API" server and some small things around it.
 
-THis server allows to place the visiting counter onto the web pages
+This server allows to place the visiting counter onto the web pages
 
 The counter looks like this:
 
