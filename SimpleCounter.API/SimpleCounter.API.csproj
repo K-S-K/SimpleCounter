@@ -6,7 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <StartupObject>SimpleCounter.API.Program</StartupObject>
     <BaseOutputPath>..\_Bin\</BaseOutputPath>
-    <BaseIntermediateOutputPath>..\_Obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleCounter.Core\SimpleCounter.Core.csproj" />
+  </ItemGroup>
 
 </Project>
