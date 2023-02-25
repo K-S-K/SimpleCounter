@@ -2,11 +2,11 @@
 {
     public class CounterData : ICounterData
     {
-        private int count = 0;
+        private readonly PagedCounters counters = new();
 
         public int GetCounterValue(Guid pageId)
         {
-            return ++count;
+            return counters.Increment(pageId);
         }
     }
 }

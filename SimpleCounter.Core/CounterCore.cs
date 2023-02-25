@@ -5,8 +5,8 @@ namespace SimpleCounter.Core
 {
     public class CounterCore : ICounterCore
     {
-        private ICounterDraw _counterDraw;
-        private ICounterData _counterData;
+        private readonly ICounterDraw _counterDraw;
+        private readonly ICounterData _counterData;
 
         public CounterCore(ICounterData counterData, ICounterDraw counterDraw)
         {
