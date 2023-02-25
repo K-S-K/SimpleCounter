@@ -7,9 +7,4 @@
     <BaseOutputPath>..\_Bin\</BaseOutputPath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SimpleCounter.Data\SimpleCounter.Data.csproj" />
-    <ProjectReference Include="..\SimpleCounter.Draw\SimpleCounter.Draw.csproj" />
-  </ItemGroup>
-
 </Project>

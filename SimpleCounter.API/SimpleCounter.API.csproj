@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleCounter.Core\SimpleCounter.Core.csproj" />
+    <ProjectReference Include="..\SimpleCounter.Data\SimpleCounter.Data.csproj" />
+    <ProjectReference Include="..\SimpleCounter.Draw\SimpleCounter.Draw.csproj" />
   </ItemGroup>
 
 </Project>
