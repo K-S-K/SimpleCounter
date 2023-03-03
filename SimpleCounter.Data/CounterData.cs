@@ -2,7 +2,9 @@
 {
     public class CounterData : ICounterData
     {
-        private readonly PagedCounters counters = new();
+        private readonly PageCounters counters = new();
+
+        public IEnumerable<PageCounterItem> Counters => counters.Counters;
 
         public int GetCounterValue(Guid pageId)
         {

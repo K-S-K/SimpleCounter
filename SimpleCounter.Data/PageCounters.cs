@@ -1,6 +1,6 @@
 ﻿namespace SimpleCounter.Data
 {
-    public class PagedCounters
+    public class PageCounters
     {
         private readonly SemaphoreSlim semaphore = new(1, 1);
         private readonly Dictionary<Guid, PageCounterItem> _data = new();
@@ -21,5 +21,7 @@
 
             return counterValue;
         }
+
+        public IEnumerable<PageCounterItem> Counters => _data.Values;
     }
 }
