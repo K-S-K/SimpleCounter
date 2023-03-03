@@ -4,7 +4,7 @@
     {
         private int _value = 0;
 
-        public readonly Guid Id;
+        public Guid Id { get; private set; }
         public int Value => _value;
 
         public int Increment()

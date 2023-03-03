@@ -12,8 +12,34 @@ namespace SimpleCounter.API
         /// <summary>
         /// Program entry point
         /// 
-        /// Documentation:
+        /// How to publish
+        /// dotnet publish -c Release
+        /// 
+        /// Documentation on project
+        /// https://github.com/K-S-K/SimpleCounter
+        /// 
+        /// Documentation on Minimal APIs:
         /// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-7.0
+        /// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-7.0
+        /// 
+        /// Cache control theory
+        /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+        /// 
+        /// Documentation on GitHub's image caching
+        /// https://github.com/orgs/community/discussions/22283
+        /// https://github.com/community/community/discussions/11884
+        /// 
+        /// Documentation on image caching
+        /// https://stackoverflow.com/questions/728616/disable-cache-for-some-images
+        /// 
+        /// Documentation on UrlReferrer Property
+        /// https://learn.microsoft.com/en-us/dotnet/api/system.web.httprequest.urlreferrer?redirectedfrom=MSDN&view=netframework-4.8.1
+        /// 
+        /// Mongo
+        /// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mongo-app?view=aspnetcore-7.0&tabs=visual-studio
+        /// https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/
+        /// https://www.mongodb.com/docs/mongodb-shell/install/
+        /// 
         /// </summary>
         /// <param name="args"></param>
         public static void Main(string[] args)
@@ -28,31 +54,26 @@ namespace SimpleCounter.API
 
 
             counterCore = (ICounterCore)app.Services.GetRequiredService(typeof(ICounterCore));
+            var counterData = (ICounterData)app.Services.GetRequiredService(typeof(ICounterData));
 
 
             app.MapGet("/", () => "SimpleCounter V.0.0.1");
 
+            app.MapGet("/counters/", (HttpContext http) =>
+            {
+                ReqRport(http);
+
+                return Results.Ok(counterData.Counters);
+            });
+
             app.MapGet("/counter/{id}", (HttpContext http, string id) =>
             {
+                ReqRport(http);
+
                 string mimeType = "image/svg+xml";
                 string content = CreateCounterImage(id);
 
                 http.Response.Headers.CacheControl = "no-cache";
-
-                StringBuilder sb = new();
-                sb.AppendLine($"{DateTime.UtcNow:yyyy.dd.MM HH:mm:ss} Referers[{http.Request.Headers.Referer.Count}]");
-                if (http.Request.Headers.Referer.Count > 0)
-                {
-                    sb.AppendLine("{");
-                    foreach (var referer in http.Request.Headers.Referer)
-                    {
-                        sb.AppendLine($" {referer}");
-                    }
-                    sb.AppendLine("}");
-                    sb.AppendLine();
-                }
-
-                Console.WriteLine(sb.ToString());
 
                 MemoryStream stream = new(Encoding.UTF8.GetBytes(content));
                 return Results.File(stream, mimeType, $"{id}.svg");
@@ -60,6 +81,24 @@ namespace SimpleCounter.API
             });
 
             app.Run();
+        }
+
+        private static void ReqRport(HttpContext http)
+        {
+            StringBuilder sb = new();
+            sb.AppendLine($"{DateTime.UtcNow:yyyy.dd.MM HH:mm:ss} Referers[{http.Request.Headers.Referer.Count}]");
+            if (http.Request.Headers.Referer.Count > 0)
+            {
+                sb.AppendLine("{");
+                foreach (var referer in http.Request.Headers.Referer)
+                {
+                    sb.AppendLine($" {referer}");
+                }
+                sb.AppendLine("}");
+                sb.AppendLine();
+            }
+
+            Console.WriteLine(sb.ToString());
         }
 
         /// <summary>
