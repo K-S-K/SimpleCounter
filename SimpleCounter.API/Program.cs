@@ -1,4 +1,6 @@
 using System.Text;
+using Microsoft.AspNetCore.HttpLogging;
+
 using SimpleCounter.Core;
 using SimpleCounter.Data;
 using SimpleCounter.Draw;
@@ -50,7 +52,39 @@ namespace SimpleCounter.API
             builder.Services.AddSingleton<ICounterData, CounterData>();
             builder.Services.AddSingleton<ICounterCore, CounterCore>();
 
+            builder.Services.AddHttpLogging(opts => opts.LoggingFields = HttpLoggingFields.RequestProperties);
+            builder.Logging.AddFilter("Microsoft.AspNetCore.HttpLogging", LogLevel.Debug);
+
             var app = builder.Build();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseHttpLogging();
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
+                app.MapGet("/error", () => "An error occurred, but we are already working on it");
+            }
+
+            app.MapGet("/e", () => { throw new Exception("Test Exception"); });
+
+            app.Use(async (context, next) =>
+            {
+                try
+                {
+                    await next.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    //var loggingService = context.RequestServices.GetService<ILoggingService>();
+                    //loggingService.Error(ex);
+                    Console.Error.WriteLine(ex.Message + " My " + ex.StackTrace);
+                    throw;
+                }
+
+            });
 
 
             counterCore = (ICounterCore)app.Services.GetRequiredService(typeof(ICounterCore));
