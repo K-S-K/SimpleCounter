@@ -1,6 +1,6 @@
 ﻿namespace SimpleCounter.Data
 {
-    public class PageCounterItem
+    public class CounterItem
     {
         private int _value = 0;
 
@@ -15,7 +15,7 @@
 
         public override string ToString() => $"{_value}";
 
-        public PageCounterItem(Guid id, int value = 0)
+        public CounterItem(Guid id, int value = 0)
         {
             Id = id;
             _value = value;

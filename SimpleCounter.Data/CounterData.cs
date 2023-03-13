@@ -4,7 +4,7 @@
     {
         private readonly PageCounters counters = new();
 
-        public IEnumerable<PageCounterItem> Counters => counters.Counters;
+        public IEnumerable<CounterItem> Counters => counters.Counters;
 
         public int GetCounterValue(Guid pageId)
         {

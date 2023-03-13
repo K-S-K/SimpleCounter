@@ -3,13 +3,13 @@
     public class PageCounters
     {
         private readonly SemaphoreSlim semaphore = new(1, 1);
-        private readonly Dictionary<Guid, PageCounterItem> _data = new();
+        private readonly Dictionary<Guid, CounterItem> _data = new();
 
         public int Increment(Guid pageId)
         {
             semaphore.Wait();
 
-            if (!_data.TryGetValue(pageId, out PageCounterItem? item))
+            if (!_data.TryGetValue(pageId, out CounterItem? item))
             {
                 item = new(pageId);
                 _data.Add(pageId, item);
@@ -22,6 +22,6 @@
             return counterValue;
         }
 
-        public IEnumerable<PageCounterItem> Counters => _data.Values;
+        public IEnumerable<CounterItem> Counters => _data.Values;
     }
 }
