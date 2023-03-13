@@ -54,6 +54,7 @@ namespace SimpleCounter.API
 
             builder.Services.AddHttpLogging(opts => opts.LoggingFields = HttpLoggingFields.RequestProperties);
             builder.Logging.AddFilter("Microsoft.AspNetCore.HttpLogging", LogLevel.Debug);
+            builder.Services.AddProblemDetails();
 
             var app = builder.Build();
 
@@ -105,7 +106,16 @@ namespace SimpleCounter.API
                 ReqRport(http);
 
                 string mimeType = "image/svg+xml";
-                string content = CreateCounterImage(id);
+                string content;
+                try { content = CreateCounterImage(id); }
+                catch (Exception ex)
+                {
+                    var errors
+                    = new Dictionary<string, string[]>
+                    { { id, new[] { ex.Message } } };
+
+                    return Results.ValidationProblem(errors);
+                }
 
                 http.Response.Headers.CacheControl = "no-cache";
 

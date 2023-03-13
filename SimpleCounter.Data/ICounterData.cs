@@ -2,7 +2,7 @@
 {
     public interface ICounterData
     {
-        public IEnumerable<PageCounterItem> Counters { get; }
+        public IEnumerable<CounterItem> Counters { get; }
         int GetCounterValue(Guid pageId);
     }
 }
