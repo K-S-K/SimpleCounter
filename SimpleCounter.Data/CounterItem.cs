@@ -4,8 +4,8 @@
     {
         private int _value = 0;
 
-        public Guid Id { get; private set; }
-        public int Value => _value;
+        public Guid CounterId { get; private set; }
+        public int CounterValue => _value;
 
         public int Increment()
         {
@@ -17,7 +17,7 @@
 
         public CounterItem(Guid id, int value = 0)
         {
-            Id = id;
+            CounterId = id;
             _value = value;
         }
     }
