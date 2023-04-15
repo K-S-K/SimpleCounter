@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.HttpLogging;
 using SimpleCounter.Core;
 using SimpleCounter.Data;
 using SimpleCounter.Draw;
+using SimpleCounter.Mongo;
+using SimpleCounter.Common;
 
 namespace SimpleCounter.API
 {
@@ -42,12 +44,27 @@ namespace SimpleCounter.API
         /// https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/
         /// https://www.mongodb.com/docs/mongodb-shell/install/
         /// 
+        /// The book examples:
+        /// https://github.com/andrewlock/asp-dot-net-core-in-action-3e
+        /// 
+        /// Mongo Connect example:
+        /// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mongo-app
+        /// https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api
+        /// 
+        /// Mongo Script example:
+        /// https://www.mongodb.com/docs/v5.0/tutorial/write-scripts-for-the-mongo-shell/
+        /// 
         /// </summary>
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.Configure<CountersDatabaseSettings>(
+                builder.Configuration.GetSection("CountersDatabase"));
+
+            builder.Services.AddSingleton<ICounterStorage, CounterStorage>();
+            builder.Services.AddSingleton<IPageCounters, PageCounters>();
             builder.Services.AddSingleton<ICounterDraw, CounterDraw>();
             builder.Services.AddSingleton<ICounterData, CounterData>();
             builder.Services.AddSingleton<ICounterCore, CounterCore>();

@@ -1,6 +1,8 @@
-﻿namespace SimpleCounter.Data
+﻿using SimpleCounter.Common;
+
+namespace SimpleCounter.Data
 {
-    public class CounterItem
+    public class CounterItem : ICounterItem
     {
         private int _value = 0;
 
