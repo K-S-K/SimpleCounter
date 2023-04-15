@@ -9,9 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SimpleCounter.Common\SimpleCounter.Common.csproj" />
     <ProjectReference Include="..\SimpleCounter.Core\SimpleCounter.Core.csproj" />
     <ProjectReference Include="..\SimpleCounter.Data\SimpleCounter.Data.csproj" />
     <ProjectReference Include="..\SimpleCounter.Draw\SimpleCounter.Draw.csproj" />
+    <ProjectReference Include="..\SimpleCounter.Mongo\SimpleCounter.Mongo.csproj" />
   </ItemGroup>
 
 </Project>

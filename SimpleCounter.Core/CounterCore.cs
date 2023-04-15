@@ -1,4 +1,4 @@
-﻿using SimpleCounter.Data;
+﻿using SimpleCounter.Common;
 using SimpleCounter.Draw;
 
 namespace SimpleCounter.Core

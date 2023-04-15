@@ -1,10 +1,17 @@
-﻿namespace SimpleCounter.Data
+﻿using SimpleCounter.Common;
+
+namespace SimpleCounter.Data
 {
     public class CounterData : ICounterData
     {
-        private readonly PageCounters counters = new();
+        private readonly IPageCounters counters;
 
-        public IEnumerable<CounterItem> Counters => counters.Counters;
+        public CounterData(IPageCounters counters)
+        {
+            this.counters = counters;
+        }
+
+        public IEnumerable<ICounterItem> Counters => counters.Counters;
 
         public int GetCounterValue(Guid pageId)
         {
