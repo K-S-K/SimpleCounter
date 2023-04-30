@@ -11,8 +11,6 @@ namespace SimpleCounter.API
 {
     public class Program
     {
-        private static ICounterCore? counterCore;
-
         /// <summary>
         /// Program entry point
         /// 
@@ -105,67 +103,21 @@ namespace SimpleCounter.API
             });
 
 
-            counterCore = (ICounterCore)app.Services.GetRequiredService(typeof(ICounterCore));
-            var counterData = (ICounterData)app.Services.GetRequiredService(typeof(ICounterData));
-
-
             app.MapGet("/", () => "SimpleCounter V.0.0.1");
 
-            app.MapGet("/counters/", (HttpContext http) =>
-            {
-                ReqRport(http);
+            app.MapGet("/counters/", ListCounters);
 
-                return Results.Ok(counterData.Counters);
-            });
-
-            app.MapGet("/counter/{id}", (HttpContext http, string id) =>
-            {
-                ReqRport(http);
-
-                string mimeType = "image/svg+xml";
-                string content;
-                try { content = CreateCounterImage(id); }
-                catch (Exception ex)
-                {
-                    var errors
-                    = new Dictionary<string, string[]>
-                    { { id, new[] { ex.Message } } };
-
-                    return Results.ValidationProblem(errors);
-                }
-
-                http.Response.Headers.CacheControl = "no-cache";
-
-                MemoryStream stream = new(Encoding.UTF8.GetBytes(content));
-                return Results.File(stream, mimeType, $"{id}.svg");
-                // return Results.Text(content, mimeType);
-            });
+            app.Map("/counter/{id}", CreateCounterImage);
 
             app.Run();
-        }
-
-        private static void ReqRport(HttpContext http)
-        {
-            StringBuilder sb = new();
-            sb.AppendLine($"{DateTime.UtcNow:yyyy.dd.MM HH:mm:ss} Referers[{http.Request.Headers.Referer.Count}]");
-            if (http.Request.Headers.Referer.Count > 0)
-            {
-                sb.AppendLine("{");
-                foreach (var referer in http.Request.Headers.Referer)
-                {
-                    sb.AppendLine($" {referer}");
-                }
-                sb.AppendLine("}");
-                sb.AppendLine();
-            }
-
-            Console.WriteLine(sb.ToString());
         }
 
         /// <summary>
         /// Gets SVG image to return as a result
         /// </summary>
+        /// <param name="context">Http context</param>
         /// <param name="id">Counter Identifier</param>
+        /// <param name="counterCore">The Counter Processor Service</param>
         /// <returns>SVG Image Content</returns>
         /// <exception cref="NullReferenceException"></exception>
         /// <remarks>
@@ -178,16 +130,69 @@ namespace SimpleCounter.API
         /// </html>
         /// 
         /// </remarks>
-        private static string CreateCounterImage(string id)
+        private static IResult CreateCounterImage(HttpContext context, string id, ICounterCore counterCore)
         {
-            if (counterCore == null)
+            ReqRport(context);
+
+            string content;
+            try
             {
-                throw new NullReferenceException(nameof(counterCore));
+                if (counterCore == null)
+                {
+                    throw new NullReferenceException(nameof(counterCore));
+                }
+
+                Guid pageId = Guid.Parse(id);
+                content = counterCore.CreateCounterImage(pageId);
+            }
+            catch (Exception ex)
+            {
+                var errors
+                = new Dictionary<string, string[]>
+                { { id, new[] { ex.Message } } };
+
+                return Results.ValidationProblem(errors);
             }
 
-            Guid pageId = Guid.Parse(id);
-            string content = counterCore.CreateCounterImage(pageId);
-            return content;
+            context.Response.Headers.CacheControl = "no-cache";
+
+            string mimeType = "image/svg+xml";
+            MemoryStream stream = new(Encoding.UTF8.GetBytes(content));
+            return Results.File(stream, mimeType, $"{id}.svg");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context">The Http Request Context</param>
+        /// <param name="counterData">The Counter Data Service</param>
+        /// <returns></returns>
+        private static IResult ListCounters(HttpContext context, ICounterData counterData)
+        {
+            ReqRport(context);
+            return Results.Ok(counterData.Counters);
+        }
+
+        /// <summary>
+        /// Creates the request report for the log
+        /// </summary>
+        /// <param name="context">The Http Request Context</param>
+        private static void ReqRport(HttpContext context)
+        {
+            StringBuilder sb = new();
+            sb.AppendLine($"{DateTime.UtcNow:yyyy.dd.MM HH:mm:ss} Referers[{context.Request.Headers.Referer.Count}]");
+            if (context.Request.Headers.Referer.Count > 0)
+            {
+                sb.AppendLine("{");
+                foreach (var referer in context.Request.Headers.Referer)
+                {
+                    sb.AppendLine($" {referer}");
+                }
+                sb.AppendLine("}");
+                sb.AppendLine();
+            }
+
+            Console.WriteLine(sb.ToString());
         }
     }
 }
