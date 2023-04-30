@@ -2,8 +2,6 @@ using System.Text;
 using Microsoft.AspNetCore.HttpLogging;
 
 using SimpleCounter.Core;
-using SimpleCounter.Data;
-using SimpleCounter.Draw;
 using SimpleCounter.Mongo;
 using SimpleCounter.Common;
 
@@ -19,53 +17,21 @@ namespace SimpleCounter.API
         /// 
         /// Documentation on project
         /// https://github.com/K-S-K/SimpleCounter
-        /// 
-        /// Documentation on Minimal APIs:
-        /// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-7.0
-        /// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-7.0
-        /// 
-        /// Cache control theory
-        /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-        /// 
-        /// Documentation on GitHub's image caching
-        /// https://github.com/orgs/community/discussions/22283
-        /// https://github.com/community/community/discussions/11884
-        /// 
-        /// Documentation on image caching
-        /// https://stackoverflow.com/questions/728616/disable-cache-for-some-images
-        /// 
-        /// Documentation on UrlReferrer Property
-        /// https://learn.microsoft.com/en-us/dotnet/api/system.web.httprequest.urlreferrer?redirectedfrom=MSDN&view=netframework-4.8.1
-        /// 
-        /// Mongo
-        /// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mongo-app?view=aspnetcore-7.0&tabs=visual-studio
-        /// https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/
-        /// https://www.mongodb.com/docs/mongodb-shell/install/
-        /// 
-        /// The book examples:
-        /// https://github.com/andrewlock/asp-dot-net-core-in-action-3e
-        /// 
-        /// Mongo Connect example:
-        /// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mongo-app
-        /// https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api
-        /// 
-        /// Mongo Script example:
-        /// https://www.mongodb.com/docs/v5.0/tutorial/write-scripts-for-the-mongo-shell/
-        /// 
         /// </summary>
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Get counters database configuration
             builder.Services.Configure<CountersDatabaseSettings>(
                 builder.Configuration.GetSection("CountersDatabase"));
 
+            // Register counters storage
             builder.Services.AddSingleton<ICounterStorage, CounterStorage>();
-            builder.Services.AddSingleton<IPageCounters, PageCounters>();
-            builder.Services.AddSingleton<ICounterDraw, CounterDraw>();
-            builder.Services.AddSingleton<ICounterData, CounterData>();
-            builder.Services.AddSingleton<ICounterCore, CounterCore>();
+
+            // Register counters infrastructure
+            builder.Services.AddCountersInfrastructure();
 
             builder.Services.AddHttpLogging(opts => opts.LoggingFields = HttpLoggingFields.RequestProperties);
             builder.Logging.AddFilter("Microsoft.AspNetCore.HttpLogging", LogLevel.Debug);
