@@ -10,3 +10,5 @@ The counter looks like this:
 
 #### Warning:
 There is a caching on the GitHub pages that affects on the frequency of real counter refreshing.
+
+[The documentatiom and useful links](https://github.com/K-S-K/SimpleCounter/blob/master/Doc/Doc.md)
