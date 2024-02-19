@@ -1,10 +1,10 @@
-# The documentatiom and useful links
+# The documentation and useful links
 
 #### Documentation on Minimal APIs:
 [How to create responses in Minimal API apps](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-7.0)<br>
 [Dependency injection in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-7.0)
          
-#### Cache control theory
+#### Cache-control theory
 [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control)
          
 #### Documentation on GitHub's image caching
